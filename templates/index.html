@@ -1,0 +1,83 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url("{% static 'images/bg1.jpg' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row pt-5">
+        <div class="col-3 sidebar">
+            <!-- List group -->
+            <div class="list-group" id="myList" role="tablist">
+                <a class="list-group-item list-group-item-action" data-toggle="list" href="{% url 'index' %}">All</a>
+                {% for item in categories %}
+                <a class="list-group-item list-group-item-action {% if fc == item.id %} active {% endif %}"
+                    data-toggle="list" href="?c={{item.id}}">
+                    <img src="{{item.icon.url}}" alt="{{item.icon.url}}" style="height: 35px; padding:.4rem">
+                    {{item}}
+                </a>
+                {% empty %}
+                <a class="list-group-item list-group-item-action " data-toggle="list" href="">No Categories Yet</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-9 articles">
+            <div class="container">
+                <div class="row">
+
+                    {% for item in articles %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <a href="{% url 'article' item.id %}">
+                                <img src="{{item.hero_img.url}}" style="aspect-ratio: 3/2;" class="card-img-top"
+                                    alt="{{item.title}}">
+                            </a>
+                            <div class="card-body">
+                                <a href="{% url 'article' item.id %}">
+                                    <h5 class="card-title">{{item.title}}</h5>
+                                </a>
+                                <a href="?a={{item.user.id}}">
+                                    <h6 class="card-subtitle mb-2 text-muted ">Author: {{item.user}}</h6>
+                                </a>
+                                <p class="card-text">
+                                    {{item.content|truncatechars:150}}
+                                    <a href="{% url 'article' item.id %}">read more</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+
+                    {% endfor %}
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                {% if articles.has_previous%}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ articles.previous_page_number }}">Previous</a>
+                                </li>
+                                {% endif %}
+                                {% if articles.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ articles.next_page_number }}">Next</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
